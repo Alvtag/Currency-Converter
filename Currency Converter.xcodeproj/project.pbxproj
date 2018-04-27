@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0671F81020922B7100CCE8E0 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671F80F20922B7100CCE8E0 /* Currency.swift */; };
+		0671F81220922B7800CCE8E0 /* Rate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671F81120922B7800CCE8E0 /* Rate.swift */; };
+		06A6C43620921EA3000EC0C8 /* RealmWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6C43520921EA3000EC0C8 /* RealmWrapper.swift */; };
 		06E0D89C208FB09900EBDABA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E0D89B208FB09900EBDABA /* AppDelegate.swift */; };
 		06E0D89E208FB09900EBDABA /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E0D89D208FB09900EBDABA /* MainView.swift */; };
 		06E0D8A1208FB09900EBDABA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06E0D89F208FB09900EBDABA /* Main.storyboard */; };
@@ -32,6 +35,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0671F80F20922B7100CCE8E0 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		0671F81120922B7800CCE8E0 /* Rate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rate.swift; sourceTree = "<group>"; };
+		06A6C43520921EA3000EC0C8 /* RealmWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmWrapper.swift; sourceTree = "<group>"; };
 		06E0D898208FB09900EBDABA /* Currency Converter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Currency Converter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		06E0D89B208FB09900EBDABA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06E0D89D208FB09900EBDABA /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -99,7 +105,6 @@
 			children = (
 				06E0D8C2209108A100EBDABA /* Interactor */,
 				06E0D8C12090FE2500EBDABA /* Model */,
-				06E0D8C02090FE0C00EBDABA /* Presenter */,
 				06E0D8BF2090FDFF00EBDABA /* View */,
 				06E0D8BE2090FDF400EBDABA /* Presenter */,
 				06E0D89B208FB09900EBDABA /* AppDelegate.swift */,
@@ -136,18 +141,12 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		06E0D8C02090FE0C00EBDABA /* Presenter */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Presenter;
-			path = Controller;
-			sourceTree = "<group>";
-		};
 		06E0D8C12090FE2500EBDABA /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				06E0D8C5209109BD00EBDABA /* ExchangeRates.swift */,
+				0671F80F20922B7100CCE8E0 /* Currency.swift */,
+				0671F81120922B7800CCE8E0 /* Rate.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -157,6 +156,7 @@
 			children = (
 				06E0D8C3209108EA00EBDABA /* MainInteractor.swift */,
 				06E0D8C720911D7500EBDABA /* AlamoWrapper.swift */,
+				06A6C43520921EA3000EC0C8 /* RealmWrapper.swift */,
 			);
 			path = Interactor;
 			sourceTree = "<group>";
@@ -312,12 +312,16 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Currency Converter/Pods-Currency Converter-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
@@ -400,8 +404,11 @@
 				06E0D89E208FB09900EBDABA /* MainView.swift in Sources */,
 				06E0D8C6209109BD00EBDABA /* ExchangeRates.swift in Sources */,
 				06E0D8A4208FB09900EBDABA /* Currency_Converter.xcdatamodeld in Sources */,
+				0671F81020922B7100CCE8E0 /* Currency.swift in Sources */,
 				06E0D89C208FB09900EBDABA /* AppDelegate.swift in Sources */,
+				0671F81220922B7800CCE8E0 /* Rate.swift in Sources */,
 				06E0D8C4209108EA00EBDABA /* MainInteractor.swift in Sources */,
+				06A6C43620921EA3000EC0C8 /* RealmWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,21 +8,25 @@
 
 import Foundation
 
-class MainInteractor {
+class MainInteractor{
     let MAX_DIGITS = 14
     var mainController:MainView
     var outputCurrencyChoice = 0;
     var inputCurrencyChoice = 0;
     var currenciesList = [String]()
     var inputValueInCents:String = "";
+    var pendingConverstion = false; //TODO ALVTAG
     
     init(_ mainController:MainView) {
         self.mainController = mainController
     }
     
     func onViewDidLoad(){
-        AlamoWrapper().getRates()
+        
+        RealmWrapper.shared.getRateFromRealm(rateListener:self)
     }
+    
+    
     
     func addDigit(_ digit:Character){
         inputValueInCents.append(digit)
@@ -40,11 +44,31 @@ class MainInteractor {
         }
     }
     
-    func onRatesFetched(_ exchangeRates:ExchangeRates){
-    
-    }
-    
     func convertAndDisplay(){
         
+    }
+}
+
+extension MainInteractor:GetRealmRateListener{
+    func onRealmRateRetrieved(_ rate: Rate) {
+        print("ALVTAG: onRealmRateRetrieved:\(rate.currencySymbol)")
+        print("ALVTAG: onRealmRateRetrieved:\(rate.rate)")
+    }
+    func onRealmRateNotAvailable(_ currencySymbol:String) {
+        print("ALVTAG: onRealmRateNotAvailable:\(currencySymbol)")
+        AlamoWrapper.shared.getRates("CAD", self)
+    }
+}
+
+extension MainInteractor:AlamoRatesListener{
+    func onAlamoFetchComplete(_ exchangeRates: ExchangeRates) {
+        for rate in exchangeRates.rates{
+            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:rate.key,exchangeRate:rate.value, date:exchangeRates.date)
+            RealmWrapper.shared.insertRate(baseCurrencySymbol:rate.key, targetCurrencySymbol:exchangeRates.base,exchangeRate:rate.value, date:exchangeRates.date)
+        }
+    }
+    
+    func onAlamoError(_ error: Error) {
+        print("MainInteractor:error \(error)")
     }
 }

@@ -7,6 +7,10 @@
 //
 
 import Foundation
+
+/**
+ * JSON class from fixer.io
+ */
 class ExchangeRates{
     var base:String = ""
     var date:String = ""

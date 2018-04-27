@@ -8,36 +8,53 @@
 
 import Foundation
 import Alamofire
+import SwiftyJSON
 
 class AlamoWrapper{
     let URL:String = "https://exchangeratesapi.io/api/latest"
     let BASE:String = "%%BASE%%";
     
-    func getRates(_ baseCurrency:String = "CAD") {
+    static let shared = AlamoWrapper()
+    private init() {}
+    
+    func getRates(_ baseCurrency:String, _ ratesListener:AlamoRatesListener) {
         
         let params:[String:String] = ["base":baseCurrency]
         print("ALVTAG: getRates:url:\(URL)")
-        
         
         Alamofire.request(URL, method: .get, parameters:params)
             .responseJSON{
                 response in
                 if response.result.isSuccess{
                     if let ratesValue = response.result.value {
+                        print("ALVTAG AAB \(ratesValue) ")
+                        //parse json
+                        let exchangeRates = ExchangeRates()
+                        let json = JSON(ratesValue)
                         
-                        print("ALVTAG: getRates:ratesValue:\(ratesValue)")
-//                            let weatherJson:JSON = JSON(weatherValue)
-//                            self.updateWeatherData(json:weatherJson)
-//                            self.updateUIWithWeatherData()
+                        exchangeRates.base = json["base"].stringValue
+                        exchangeRates.date = json["date"].stringValue
+                        exchangeRates.rates = Dictionary<String,Float>()
+                        print("ALVTAG:BB1 getRates:exchangeRates base:\(exchangeRates.base)")
+                        print("ALVTAG:BB2 getRates:date:\(exchangeRates.date)")
+                        
+                        let jsonRatesArray = json["rates"].dictionaryValue
+                        for (targetCurrencySymbol, jsonValue) in jsonRatesArray {
+                            print("ALVTAG:BB3 \(targetCurrencySymbol)")
+                            exchangeRates.rates[targetCurrencySymbol] = Float(jsonValue.stringValue)
+                            
+                        }
+                        print(exchangeRates.rates)
+                        
+                        //TODO pass exchangeRates back to caller. let the caller deal with writing it into realm.
+                        ratesListener.onAlamoFetchComplete(exchangeRates)
                     }
                     else{
                         if let errorUnwrap = response.error {
-                            print("ALVTAG: getRates:error:\(errorUnwrap)")
-//                                self.cityLabel.text =
-//                                "network Error:\(error2.localizedDescription)"
+                            ratesListener.onAlamoError(errorUnwrap)
                         }
                         else{
-                            print("ALVTAG: getRates:unknown error")
+                            print("unknown error in AlamoWrapper.getRates()")
                         }
                     }
                 }
@@ -46,11 +63,11 @@ class AlamoWrapper{
     }
     
 }
-protocol RatesListener{
+protocol AlamoRatesListener{
     
-    func onFetchComplete( exchangeRates:ExchangeRates);
+    func onAlamoFetchComplete(_ exchangeRates:ExchangeRates);
     
-    func onError( error:Error);
+    func onAlamoError(_ error:Error);
 }
 
 

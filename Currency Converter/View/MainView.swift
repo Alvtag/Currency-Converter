@@ -26,7 +26,6 @@ class MainView: UIViewController {
     @IBAction func onInputButtonPressed(_ sender: UIButton) {
         switch (sender.tag) {
         case 0:
-            AlamoWrapper().getRates("CAD");
             mainInteractor!.addDigit("0")
         case 1:
             mainInteractor!.addDigit("1")

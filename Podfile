@@ -9,6 +9,7 @@ target 'Currency Converter' do
     pod 'SwiftyJSON'
     pod 'Alamofire'
     pod 'SVProgressHUD'
+    pod 'RealmSwift'
 
   target 'Currency ConverterTests' do
     inherit! :search_paths
