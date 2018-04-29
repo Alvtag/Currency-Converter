@@ -15,42 +15,42 @@ class MainView: UIViewController {
     @IBOutlet weak var toCurrencyPicker: UIPickerView!
     @IBOutlet weak var infoTextLabel: UILabel!
     
-    var mainInteractor : MainInteractor?
+    var mainPresenter : MainPresenter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainInteractor = MainInteractor(self);
-        mainInteractor!.onViewDidLoad();
+        mainPresenter = MainPresenter(self);
+        mainPresenter.onViewDidLoad();
     }
     
     @IBAction func onInputButtonPressed(_ sender: UIButton) {
         switch (sender.tag) {
         case 0:
-            mainInteractor!.addDigit("0")
+            mainPresenter!.addDigit("0")
         case 1:
-            mainInteractor!.addDigit("1")
+            mainPresenter!.addDigit("1")
         case 2:
-            mainInteractor!.addDigit("2")
+            mainPresenter!.addDigit("2")
         case 3:
-            mainInteractor!.addDigit("3")
+            mainPresenter!.addDigit("3")
         case 4:
-            mainInteractor!.addDigit("4")
+            mainPresenter!.addDigit("4")
         case 5:
-            mainInteractor!.addDigit("5")
+            mainPresenter!.addDigit("5")
         case 6:
-            mainInteractor!.addDigit("6")
+            mainPresenter!.addDigit("6")
         case 7:
-            mainInteractor!.addDigit("7")
+            mainPresenter!.addDigit("7")
         case 8:
-            mainInteractor!.addDigit("8")
+            mainPresenter!.addDigit("8")
         case 9:
-            mainInteractor!.addDigit("9")
+            mainPresenter!.addDigit("9")
         case 10:
-            mainInteractor!.addDigit("0")
+            mainPresenter!.addDigit("0")
         case 11:
-            mainInteractor!.deleteDigit()
+            mainPresenter!.deleteDigit()
         case 12:
-            mainInteractor!.convertAndDisplay()
+            mainPresenter!.convertAndDisplay()
         default:
             print("Error from onInputButtonPressed")
         }
@@ -72,5 +72,29 @@ class MainView: UIViewController {
     
     func setInfoLabel(_ text:String){
         infoTextLabel.text = text
+    }
+    
+}
+
+extension MainView: UIPickerViewDataSource, UIPickerViewDelegate{
+    func initUIPickers(){
+        fromCurrencyPicker.dataSource = self
+        fromCurrencyPicker.delegate = self
+        fromCurrencyPicker.reloadAllComponents()
+        toCurrencyPicker.dataSource = self
+        toCurrencyPicker.delegate = self
+        toCurrencyPicker.reloadAllComponents()
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return mainPresenter.getCurrenciesList().count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return mainPresenter.getCurrenciesList()[row]
     }
 }

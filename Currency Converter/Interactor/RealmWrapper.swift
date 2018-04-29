@@ -22,13 +22,13 @@ class RealmWrapper{
     func getRateFromRealm(currencySymbol:String = "CAD", rateListener:GetRealmRateListener){
         let currencyArray = realm.objects(Currency.self)
         let predicate:NSPredicate = NSPredicate(format: "currencySymbol CONTAINS[cd] %@", currencySymbol);
-        print("ALVTAG AA1: \(currencyArray.count)")
+        print("AA1: \(currencyArray.count)")
         
         let filtered = currencyArray.filter(predicate);
-        print("ALVTAG AA2: \(filtered.count)")
+        print("AA2: \(filtered.count)")
         
         for currency in filtered {
-            print("ALVTAG AA3, itemResults:\(currency.currencySymbol)");
+            print("AA3, itemResults:\(currency.currencySymbol)");
         }
         
         
@@ -39,14 +39,14 @@ class RealmWrapper{
         let currencyArray = realm.objects(Currency.self)
         let predicate:NSPredicate = NSPredicate(format: "currencySymbol CONTAINS[cd] %@", baseCurrencySymbol);
         let filtered = currencyArray.filter(predicate);
+        
         if(filtered.count > 0){
+            //currency exists in DB, look for targetCurrency's rate
             let baseCurrency = filtered[0];
-            print("ALVTAG AA4- currency found \(baseCurrency.currencySymbol)")
             var rateFound = false;
             for rate in baseCurrency.rates {
                 if(rate.currencySymbol == targetCurrencySymbol){
-                    //found, just update the value
-                    print("ALVTAG AA5- rate updated")
+                    // rate was previously created,  just update the value
                     rateFound = true;
                     do{
                         try realm.write {
@@ -61,7 +61,7 @@ class RealmWrapper{
                 }
             }
             if(!rateFound){
-                print("ALVTAG AA6- rate created and appended")
+                // create newRate and append
                 let rate = Rate(currencySymbol:targetCurrencySymbol,rate:exchangeRate, date:date, parent:baseCurrency)
                 do{
                     try realm.write {
@@ -75,32 +75,37 @@ class RealmWrapper{
             
         }
         else{
+            //create newCurrency, and append newRate to it
             do{
-                print("ALVTAG AA7- currency not found! new Currency obj")
                 let newCurrency = Currency()
                 newCurrency.currencySymbol = baseCurrencySymbol
                 try realm.write {
                     realm.add(newCurrency)
                     let rate = Rate(currencySymbol:targetCurrencySymbol,rate:exchangeRate, date:date, parent:newCurrency)
                     newCurrency.rates.append(rate)
-                    print("ALVTAG AA7-ne rate appended")
                 }
             }
             catch{
                 print("AA8 error saving category \(error)")
             }
         }
+    }
+    
+    func getCurrenciesList(rateListener:GetRealmRateListener)-> Set<String>{
+        let currencyList = realm.objects(Currency.self)
+        var resultSet:Set<String> = Set()
         
-        //TODO: ALVIN thu 5:45
-        // 1 fetch currency for base,
-        // 2 if currency not available, create
-        // 3. have a realmList and append a new Managed Rate Object
-        
+        for currency in currencyList{
+            resultSet.insert(currency.currencySymbol)
+            for rate in currency.rates{
+                resultSet.insert(rate.currencySymbol)
+            }
+        }
+        return resultSet
     }
 }
 
 protocol GetRealmRateListener {
     func onRealmRateRetrieved(_ rate: Rate);
-    
-    func  onRealmRateNotAvailable(_ currencySymbol:String);
+    func onRealmRateNotAvailable(_ currencySymbol:String);
 }
