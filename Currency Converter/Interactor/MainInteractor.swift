@@ -16,8 +16,8 @@ class MainInteractor{
     var inputCurrencyChoice = 0;
     var currenciesList = [String]()
     var inputValueInCents:String = "";
-    var pendingConversion = false; //TODO ALVTAG
-    var pendingUiPicker = false; //TODO ALVTAG
+    var pendingConversion = false;
+    var pendingUiPicker = false;
     
     init(_ mainPresenter:MainPresenter) {
         self.mainPresenter = mainPresenter
@@ -29,15 +29,11 @@ class MainInteractor{
     
     func loadCurrecyRateList(){
         currenciesList.append(contentsOf: RealmWrapper.shared.getCurrenciesList(rateListener : self))
-        print("Alvtag CCC loadCurrecyRateList")
         
         if(currenciesList.count > 0){
-            print("Alvtag CC1 loaded from realm")
-            print(currenciesList)
             mainPresenter.setCurrenciesList(symbols:currenciesList)
         }
         else{
-            print("Alvtag CC2 kicking off alamoWrapper")
             pendingUiPicker = true;
             AlamoWrapper.shared.getRates(baseCurrency: "CAD", ratesListener: self)
         }
@@ -81,7 +77,7 @@ class MainInteractor{
         //TODO ALVTAG REFACTOR FOR BETTER ENCAPSULATION
         let fromIndex = mainPresenter.mainView.fromCurrencyPicker.selectedRow(inComponent: 0)
         let toIndex = mainPresenter.mainView.toCurrencyPicker.selectedRow(inComponent: 0)
-        print("ALVTAG DDX convertAndDisplay: from \(currenciesList[fromIndex]) to \(currenciesList[toIndex])")
+        
         RealmWrapper.shared.getRateFromRealm(
             baseCurrencySymbol: currenciesList[fromIndex],
             targetCurrencySymbol: currenciesList[toIndex],
@@ -93,12 +89,10 @@ extension MainInteractor:GetRealmRateListener{
     func onRealmRateNotAvailable(baseCurrencySymbol: String, toCurrencySymbol: String) {
         //rate isn't in realm, grab it from network
         pendingConversion = true
-        print("ALVTAG: ALPHA- onRealmRateNotAvailable: from:\(baseCurrencySymbol) to:\(toCurrencySymbol)")
         AlamoWrapper.shared.getRates(baseCurrency:baseCurrencySymbol, ratesListener:self)
     }
     
     func onRealmRateRetrieved(_ rate: Rate) {
-        print("ALVTAG: BETA- onRealmRateRetrieved:\(rate.currencySymbol); rate:\(rate.rate)")
         let input = UInt64(inputValueInCents)!
         let outputValueInDollars:Float = Float(input) * rate.rate / 100.0;
         mainPresenter.setOutputAmount(outputValueInCents: outputValueInDollars)
@@ -106,7 +100,6 @@ extension MainInteractor:GetRealmRateListener{
     }
     
     func onRealmCurrencyNotAvailable(_ currencySymbol:String) {
-        print("ALVTAG: onRealmRateNotAvailable:\(currencySymbol)")
         AlamoWrapper.shared.getRates(baseCurrency:currencySymbol, ratesListener:self)
     }
 }

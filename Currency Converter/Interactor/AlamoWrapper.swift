@@ -18,16 +18,12 @@ class AlamoWrapper{
     private init() {}
     
     func getRates(baseCurrency:String, ratesListener:AlamoRatesListener) {
-        
         let params:[String:String] = ["base":baseCurrency]
-        print("ALVTAG: getRates:url:\(URL)")
-        
         Alamofire.request(URL, method: .get, parameters:params)
             .responseJSON{
                 response in
                 if response.result.isSuccess{
                     if let ratesValue = response.result.value {
-                        print("ALVTAG AAB \(ratesValue) ")
                         //parse json
                         let exchangeRates = ExchangeRates()
                         let json = JSON(ratesValue)
@@ -35,12 +31,9 @@ class AlamoWrapper{
                         exchangeRates.base = json["base"].stringValue
                         exchangeRates.date = json["date"].stringValue
                         exchangeRates.rates = Dictionary<String,Float>()
-                        print("ALVTAG:BB1 getRates:exchangeRates base:\(exchangeRates.base)")
-                        print("ALVTAG:BB2 getRates:date:\(exchangeRates.date)")
                         
                         let jsonRatesArray = json["rates"].dictionaryValue
                         for (targetCurrencySymbol, jsonValue) in jsonRatesArray {
-                            print("ALVTAG:BB3 \(targetCurrencySymbol)")
                             exchangeRates.rates[targetCurrencySymbol] = Float(jsonValue.stringValue)
                             
                         }

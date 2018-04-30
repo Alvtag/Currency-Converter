@@ -12,6 +12,7 @@
 		0671F8142093C60500CCE8E0 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671F8132093C60500CCE8E0 /* MainPresenter.swift */; };
 		06A6C43620921EA3000EC0C8 /* RealmWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6C43520921EA3000EC0C8 /* RealmWrapper.swift */; };
 		06D2415420968B6600126EAE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D2415320968B6600126EAE /* Common.swift */; };
+		06D241582096AF3C00126EAE /* MainInteractorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D241572096AF3C00126EAE /* MainInteractorTest.swift */; };
 		06E0D89C208FB09900EBDABA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E0D89B208FB09900EBDABA /* AppDelegate.swift */; };
 		06E0D89E208FB09900EBDABA /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E0D89D208FB09900EBDABA /* MainView.swift */; };
 		06E0D8A1208FB09900EBDABA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06E0D89F208FB09900EBDABA /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 		0671F8132093C60500CCE8E0 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		06A6C43520921EA3000EC0C8 /* RealmWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmWrapper.swift; sourceTree = "<group>"; };
 		06D2415320968B6600126EAE /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		06D241572096AF3C00126EAE /* MainInteractorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInteractorTest.swift; sourceTree = "<group>"; };
 		06E0D898208FB09900EBDABA /* Currency Converter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Currency Converter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		06E0D89B208FB09900EBDABA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06E0D89D208FB09900EBDABA /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 			children = (
 				06E0D8B3208FB09900EBDABA /* Currency_ConverterTests.swift */,
 				06E0D8B5208FB09900EBDABA /* Info.plist */,
+				06D241572096AF3C00126EAE /* MainInteractorTest.swift */,
 			);
 			path = "Currency ConverterTests";
 			sourceTree = "<group>";
@@ -223,6 +226,7 @@
 			buildConfigurationList = 06E0D8BB208FB09900EBDABA /* Build configuration list for PBXNativeTarget "Currency ConverterTests" */;
 			buildPhases = (
 				27D6F777DC08EB58ED8B242E /* [CP] Check Pods Manifest.lock */,
+				0641673D2096D7640025962E /* ShellScript */,
 				06E0D8AB208FB09900EBDABA /* Sources */,
 				06E0D8AC208FB09900EBDABA /* Frameworks */,
 				06E0D8AD208FB09900EBDABA /* Resources */,
@@ -300,6 +304,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0641673D2096D7640025962E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Define output file. Change \"$PROJECT_DIR/${PROJECT_NAME}Tests\" to your test's root source folder, if it's not the default name.\nOUTPUT_FILE=\"$PROJECT_DIR/${PROJECT_NAME}Tests/GeneratedMocks.swift\"\necho \"Generated Mocks File = $OUTPUT_FILE\"\n\n# Define input directory. Change \"${PROJECT_DIR}/${PROJECT_NAME}\" to your project's root source folder, if it's not the default name.\nINPUT_DIR=\"/Users/alvinfong/Desktop/iOS/Currency\\ Converter/\"\necho \"Mocks Input Directory = $INPUT_DIR\"\n\n# Generate mock files, include as many input files as you'd like to create mocks for.\n\"${PODS_ROOT}/Cuckoo/run\" generate --testable \"$PROJECT_NAME\" \\\n--output \"${OUTPUT_FILE}\" \\\n\"$INPUT_DIR/Presenter/MainPresenter.swift\"\n#\"$INPUT_DIR/FileName2.swift\" \\\n#\"$INPUT_DIR/FileName3.swift\"\n# ... and so forth, the last line should never end with a backslash\n\n# After running once, locate `GeneratedMocks.swift` and drag it into your Xcode test target group.";
+		};
 		27D6F777DC08EB58ED8B242E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -326,6 +343,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Currency Converter/Pods-Currency Converter-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Cuckoo/Cuckoo.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
@@ -334,6 +352,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cuckoo.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
@@ -433,6 +452,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				06E0D8B4208FB09900EBDABA /* Currency_ConverterTests.swift in Sources */,
+				06D241582096AF3C00126EAE /* MainInteractorTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,13 +20,11 @@ class RealmWrapper{
     }
     
     func getRateFromRealm(baseCurrencySymbol:String, targetCurrencySymbol:String, rateListener:GetRealmRateListener){
-        print("ALVTAG AAP 1 getRateFromRealm")
         let currencyArray = realm.objects(Currency.self)
         let predicate:NSPredicate = NSPredicate(format: "currencySymbol CONTAINS[cd] %@", baseCurrencySymbol);
         let filteredCurrencyArray = currencyArray.filter(predicate);
         if (filteredCurrencyArray.count == 0) {
             rateListener.onRealmRateNotAvailable(baseCurrencySymbol: baseCurrencySymbol, toCurrencySymbol: targetCurrencySymbol)
-            print("ALVTAG AAP 2 realmRateNotAvailable")
             return;
         }
         

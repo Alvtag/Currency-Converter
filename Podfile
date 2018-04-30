@@ -10,6 +10,7 @@ target 'Currency Converter' do
     pod 'Alamofire'
     pod 'SVProgressHUD'
     pod 'RealmSwift'
+    pod 'Cuckoo'
 
   target 'Currency ConverterTests' do
     inherit! :search_paths

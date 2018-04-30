@@ -50,7 +50,6 @@ class MainPresenter{
     }
     
     func setInputAmount(inputValueInCents:String){
-        print("alvtag setInputAmount: inputValueCents\(inputValueInCents)")
         var inputDollars:UInt64 = 0
         var inputCents:UInt64 = 0
         if(inputValueInCents.count > 0 ){
