@@ -56,10 +56,8 @@ class MainView: UIViewController {
         }
     }
     
-    @IBAction func test(_ sender: UIButton) {
-    }
-    
     @IBAction func onClearCacheButtonPressed(_ sender: Any) {
+        mainPresenter.clearCache()
     }
     
     func setInputLabel(_ text:String){

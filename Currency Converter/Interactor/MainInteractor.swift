@@ -16,7 +16,7 @@ class MainInteractor{
     var inputCurrencyChoice = 0;
     var currenciesList = [String]()
     var inputValueInCents:String = "";
-    var pendingConverstion = false; //TODO ALVTAG
+    var pendingConversion = false; //TODO ALVTAG
     var pendingUiPicker = false; //TODO ALVTAG
     
     init(_ mainPresenter:MainPresenter) {
@@ -39,7 +39,7 @@ class MainInteractor{
         else{
             print("Alvtag CC2 kicking off alamoWrapper")
             pendingUiPicker = true;
-            AlamoWrapper.shared.getRates("CAD", self)
+            AlamoWrapper.shared.getRates(baseCurrency: "CAD", ratesListener: self)
         }
     }
     
@@ -47,6 +47,9 @@ class MainInteractor{
     func addDigit(_ digit:Character){
         if(inputValueInCents.count >= MAX_DIGITS){
             mainPresenter.setInfoText(MAX_DIGIT_ERROR_STRING)
+            return;
+        }
+        else if(inputValueInCents.isEmpty && digit == "0"){
             return;
         }
         inputValueInCents.append(digit)
@@ -63,34 +66,70 @@ class MainInteractor{
         }
     }
     
+    func clearCache(){
+        RealmWrapper.shared.clear()
+    }
+    
     func convertAndDisplay(){
+        mainPresenter.setInfoText("")
+        mainPresenter.setOutputAmount(outputValueInCents: 0.00)
+        if(inputValueInCents.isEmpty){
+            mainPresenter.setInfoText("Nothing to convert!")
+            return;
+        }
         
+        //TODO ALVTAG REFACTOR FOR BETTER ENCAPSULATION
+        let fromIndex = mainPresenter.mainView.fromCurrencyPicker.selectedRow(inComponent: 0)
+        let toIndex = mainPresenter.mainView.toCurrencyPicker.selectedRow(inComponent: 0)
+        print("ALVTAG DDX convertAndDisplay: from \(currenciesList[fromIndex]) to \(currenciesList[toIndex])")
+        RealmWrapper.shared.getRateFromRealm(
+            baseCurrencySymbol: currenciesList[fromIndex],
+            targetCurrencySymbol: currenciesList[toIndex],
+            rateListener: self)
     }
 }
 
 extension MainInteractor:GetRealmRateListener{
+    func onRealmRateNotAvailable(baseCurrencySymbol: String, toCurrencySymbol: String) {
+        //rate isn't in realm, grab it from network
+        pendingConversion = true
+        print("ALVTAG: ALPHA- onRealmRateNotAvailable: from:\(baseCurrencySymbol) to:\(toCurrencySymbol)")
+        AlamoWrapper.shared.getRates(baseCurrency:baseCurrencySymbol, ratesListener:self)
+    }
+    
     func onRealmRateRetrieved(_ rate: Rate) {
-        print("ALVTAG: onRealmRateRetrieved:\(rate.currencySymbol)")
-        print("ALVTAG: onRealmRateRetrieved:\(rate.rate)")
+        print("ALVTAG: BETA- onRealmRateRetrieved:\(rate.currencySymbol); rate:\(rate.rate)")
+        let input = UInt64(inputValueInCents)!
+        let outputValueInDollars:Float = Float(input) * rate.rate / 100.0;
+        mainPresenter.setOutputAmount(outputValueInCents: outputValueInDollars)
+        mainPresenter.setInfoText("1 \(rate.parent!.currencySymbol) = \(rate.rate) \(rate.currencySymbol), as of \(rate.date) ")
     }
     
-    func onRealmRateNotAvailable(_ currencySymbol:String) {
+    func onRealmCurrencyNotAvailable(_ currencySymbol:String) {
         print("ALVTAG: onRealmRateNotAvailable:\(currencySymbol)")
-        AlamoWrapper.shared.getRates("CAD", self)
+        AlamoWrapper.shared.getRates(baseCurrency:currencySymbol, ratesListener:self)
     }
-    
 }
 
 extension MainInteractor:AlamoRatesListener{
     func onAlamoFetchComplete(_ exchangeRates: ExchangeRates) {
         for rate in exchangeRates.rates{
-            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:rate.key,exchangeRate:rate.value, date:exchangeRates.date)
-            RealmWrapper.shared.insertRate(baseCurrencySymbol:rate.key, targetCurrencySymbol:exchangeRates.base,exchangeRate:rate.value, date:exchangeRates.date)
+            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:rate.key,
+                                           exchangeRate:rate.value, date:exchangeRates.date)
+            RealmWrapper.shared.insertRate(baseCurrencySymbol:rate.key, targetCurrencySymbol:exchangeRates.base,
+                                           exchangeRate:rate.value, date:exchangeRates.date)
+            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:exchangeRates.base,
+                                           exchangeRate:1.0, date:exchangeRates.date)
         }
         
         if(pendingUiPicker){
             pendingUiPicker = false;
             loadCurrecyRateList();
+        }
+        
+        if(pendingConversion){
+            pendingConversion = false;
+            convertAndDisplay()
         }
     }
     

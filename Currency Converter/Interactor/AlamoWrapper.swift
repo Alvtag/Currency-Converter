@@ -17,7 +17,7 @@ class AlamoWrapper{
     static let shared = AlamoWrapper()
     private init() {}
     
-    func getRates(_ baseCurrency:String, _ ratesListener:AlamoRatesListener) {
+    func getRates(baseCurrency:String, ratesListener:AlamoRatesListener) {
         
         let params:[String:String] = ["base":baseCurrency]
         print("ALVTAG: getRates:url:\(URL)")

@@ -23,11 +23,16 @@ class MainPresenter{
     }
     
     func addDigit(_ digit:Character){
+        mainView.setOuputLabel("")
         mainInteractor.addDigit(digit)
     }
     
     func deleteDigit(){
         mainInteractor.deleteDigit()
+    }
+    
+    func clearCache(){
+        mainInteractor.clearCache()
     }
     
     func convertAndDisplay(){
@@ -45,31 +50,37 @@ class MainPresenter{
     }
     
     func setInputAmount(inputValueInCents:String){
-        if(inputValueInCents.count == 0 ){
-            return
+        print("alvtag setInputAmount: inputValueCents\(inputValueInCents)")
+        var inputDollars:UInt64 = 0
+        var inputCents:UInt64 = 0
+        if(inputValueInCents.count > 0 ){
+            let inputValueCents = UInt64(inputValueInCents)!
+            inputDollars = inputValueCents / 100
+            inputCents = inputValueCents % 100
         }
         
-        let inputValueCents = UInt64(inputValueInCents)!
-        print("FFC: inputValueCents\(inputValueCents)")
+        let centsFormatter = NumberFormatter()
+        centsFormatter.minimumIntegerDigits = 2
+        centsFormatter.maximumIntegerDigits = 2
+        let cents = centsFormatter.string(for: inputCents)!
         
-        let inputDollars = inputValueCents / 100
-        let inputCents = inputValueCents % 100
+        let dollarsFormatter = NumberFormatter()
+        dollarsFormatter.numberStyle = .decimal
+        let dollars = dollarsFormatter.string(for: inputDollars)!
         
-        mainView.setInputLabel("\(formatString(inputDollars)).\(inputCents)")
+        mainView.setInputLabel("\(dollars).\(cents)")
     }
     
-    func setOutputAmount(outputValueInCents:String){
-        
+    func setOutputAmount(outputValueInCents:Float){
+        let outputFormatter = NumberFormatter()
+        outputFormatter.numberStyle = .decimal
+        outputFormatter.minimumFractionDigits = 2
+        outputFormatter.maximumFractionDigits = 2
+        let outputString = outputFormatter.string(for:outputValueInCents)!;
+        mainView.setOuputLabel(outputString)
     }
     
     func setInfoText(_ info:String){
-        mainView.setInputLabel(info)
-    }
-    
-    func formatString(_ wholeNumber:UInt64)->String{
-        let fmt = NumberFormatter()
-        fmt.numberStyle = .decimal
-        return fmt.string(for: wholeNumber)!
+        mainView.setInfoLabel(info)
     }
 }
-

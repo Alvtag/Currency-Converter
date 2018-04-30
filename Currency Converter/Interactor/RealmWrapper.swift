@@ -19,20 +19,25 @@ class RealmWrapper{
         print (Realm.Configuration.defaultConfiguration.fileURL!)
     }
     
-    func getRateFromRealm(currencySymbol:String = "CAD", rateListener:GetRealmRateListener){
+    func getRateFromRealm(baseCurrencySymbol:String, targetCurrencySymbol:String, rateListener:GetRealmRateListener){
+        print("ALVTAG AAP 1 getRateFromRealm")
         let currencyArray = realm.objects(Currency.self)
-        let predicate:NSPredicate = NSPredicate(format: "currencySymbol CONTAINS[cd] %@", currencySymbol);
-        print("AA1: \(currencyArray.count)")
-        
-        let filtered = currencyArray.filter(predicate);
-        print("AA2: \(filtered.count)")
-        
-        for currency in filtered {
-            print("AA3, itemResults:\(currency.currencySymbol)");
+        let predicate:NSPredicate = NSPredicate(format: "currencySymbol CONTAINS[cd] %@", baseCurrencySymbol);
+        let filteredCurrencyArray = currencyArray.filter(predicate);
+        if (filteredCurrencyArray.count == 0) {
+            rateListener.onRealmRateNotAvailable(baseCurrencySymbol: baseCurrencySymbol, toCurrencySymbol: targetCurrencySymbol)
+            print("ALVTAG AAP 2 realmRateNotAvailable")
+            return;
         }
         
-        
-        rateListener.onRealmRateNotAvailable(currencySymbol)
+        let baseCurrency:Currency = filteredCurrencyArray[0];
+        for rate in baseCurrency.rates {
+            if(rate.currencySymbol == targetCurrencySymbol){
+                rateListener.onRealmRateRetrieved(rate)
+                return
+            }
+        }
+        rateListener.onRealmRateNotAvailable(baseCurrencySymbol: baseCurrencySymbol, toCurrencySymbol: targetCurrencySymbol)
     }
     
     func insertRate(baseCurrencySymbol:String, targetCurrencySymbol:String, exchangeRate:Float, date:String){
@@ -103,9 +108,26 @@ class RealmWrapper{
         }
         return resultSet
     }
+    
+    func clear(){
+        do{
+            try realm.write {
+                for rate in realm.objects(Rate.self){
+                        realm.delete(rate)
+                }
+                for currency in realm.objects(Currency.self){
+                    realm.delete(currency)
+                }
+            }
+        }
+        catch{
+            print("AA9 error deleting something \(error)")
+        }
+    }
 }
 
 protocol GetRealmRateListener {
     func onRealmRateRetrieved(_ rate: Rate);
-    func onRealmRateNotAvailable(_ currencySymbol:String);
+    func onRealmCurrencyNotAvailable(_ currencySymbol:String);
+    func onRealmRateNotAvailable(baseCurrencySymbol:String, toCurrencySymbol:String);
 }
