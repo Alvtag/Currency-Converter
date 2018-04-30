@@ -12,12 +12,12 @@ class MainInteractor{
     let MAX_DIGITS = 14
     let MAX_DIGIT_ERROR_STRING = "we support up to 999,999,999,999.99"
     var mainPresenter:MainPresenter
-    var outputCurrencyChoice = 0;
-    var inputCurrencyChoice = 0;
-    var currenciesList = [String]()
+    var outputCurrencyChoice:Int = 0;
+    var inputCurrencyChoice:Int = 0;
+    var currenciesList:[String] = [String]()
     var inputValueInCents:String = "";
-    var pendingConversion = false;
-    var pendingUiPicker = false;
+    var pendingConversion:Bool = false;
+    var pendingUiPicker:Bool = false;
     
     init(_ mainPresenter:MainPresenter) {
         self.mainPresenter = mainPresenter

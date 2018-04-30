@@ -1,6 +1,6 @@
 //
-//  Currency_ConverterTests.swift
-//  Currency ConverterTests
+//  CurrencyConverterTests.swift
+//  CurrencyConverterTests
 //
 //  Created by Alvin Fong on 2018-04-30.
 //  Copyright © 2018 Alvin Fong. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class Currency_ConverterTests: XCTestCase {
+class CurrencyConverterTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
