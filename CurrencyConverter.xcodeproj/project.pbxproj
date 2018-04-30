@@ -264,7 +264,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 06E0D893208FB09800EBDABA /* Build configuration list for PBXProject "Currency Converter" */;
+			buildConfigurationList = 06E0D893208FB09800EBDABA /* Build configuration list for PBXProject "CurrencyConverter" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -660,7 +660,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		06E0D893208FB09800EBDABA /* Build configuration list for PBXProject "Currency Converter" */ = {
+		06E0D893208FB09800EBDABA /* Build configuration list for PBXProject "CurrencyConverter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06E0D8B6208FB09900EBDABA /* Debug */,
