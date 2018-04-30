@@ -79,7 +79,7 @@ class MainPresenter{
         mainView.setOuputLabel(outputString)
     }
     
-    func setInfoText(_ info:String){
+    func setInfoText(info:String){
         mainView.setInfoLabel(info)
     }
 }

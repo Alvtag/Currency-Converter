@@ -42,7 +42,7 @@ class MainInteractor{
     //MARK:- input value methods
     func addDigit(_ digit:Character){
         if(inputValueInCents.count >= MAX_DIGITS){
-            mainPresenter.setInfoText(MAX_DIGIT_ERROR_STRING)
+            mainPresenter.setInfoText(info:MAX_DIGIT_ERROR_STRING)
             return;
         }
         else if(inputValueInCents.isEmpty && digit == "0"){
@@ -67,10 +67,10 @@ class MainInteractor{
     }
     
     func convertAndDisplay(){
-        mainPresenter.setInfoText("")
+        mainPresenter.setInfoText(info:"")
         mainPresenter.setOutputAmount(outputValueInCents: 0.00)
         if(inputValueInCents.isEmpty){
-            mainPresenter.setInfoText("Nothing to convert!")
+            mainPresenter.setInfoText(info:"Nothing to convert!")
             return;
         }
         
@@ -96,7 +96,7 @@ extension MainInteractor:GetRealmRateListener{
         let input = UInt64(inputValueInCents)!
         let outputValueInDollars:Float = Float(input) * rate.rate / 100.0;
         mainPresenter.setOutputAmount(outputValueInCents: outputValueInDollars)
-        mainPresenter.setInfoText("1 \(rate.parent!.currencySymbol) = \(rate.rate) \(rate.currencySymbol), as of \(rate.date) ")
+        mainPresenter.setInfoText(info:"1 \(rate.parent!.currencySymbol) = \(rate.rate) \(rate.currencySymbol), as of \(rate.date) ")
     }
     
     func onRealmCurrencyNotAvailable(_ currencySymbol:String) {

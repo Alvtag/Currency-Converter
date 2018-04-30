@@ -11,7 +11,7 @@ target 'Currency Converter' do
     pod 'SVProgressHUD'
     pod 'RealmSwift'
 
-  target 'CurrencyConverterTests' do
+  target 'Currency ConverterTests' do
     inherit! :search_paths
     # Pods for testing
     pod 'Cuckoo'
