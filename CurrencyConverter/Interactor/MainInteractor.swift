@@ -5,12 +5,11 @@
 //  Created by Alvin Fong on 2018-04-25.
 //  Copyright © 2018 Alvin Fong. All rights reserved.
 //
-
 import Foundation
 
 class MainInteractor{
     let MAX_DIGITS = 14
-    let MAX_DIGIT_ERROR_STRING = "we support up to 999,999,999,999.99"
+    let MAX_DIGIT_ERROR_STRING = "We support up to 999,999,999,999.99"
     var mainPresenter:MainPresenter
     var outputCurrencyChoice:Int = 0;
     var inputCurrencyChoice:Int = 0;
@@ -24,14 +23,14 @@ class MainInteractor{
     }
     
     func onViewDidLoad(){
-        loadCurrecyRateList()
+        loadCurrecyRateList(RealmWrapper())
     }
     
-    func loadCurrecyRateList(){
-        currenciesList.append(contentsOf: RealmWrapper.shared.getCurrenciesList(rateListener : self))
+    func loadCurrecyRateList(_ realmWrapper:RealmWrapper){
+        currenciesList.append(contentsOf: realmWrapper.getCurrenciesList(rateListener : self))
         
         if(currenciesList.count > 0){
-            mainPresenter.setCurrenciesList(symbols:currenciesList)
+            mainPresenter.setCurrenciesList()
         }
         else{
             pendingUiPicker = true;
@@ -62,11 +61,11 @@ class MainInteractor{
         }
     }
     
-    func clearCache(){
-        RealmWrapper.shared.clear()
+    func clearCache(_ realmWrapper:RealmWrapper){
+        realmWrapper.clear()
     }
     
-    func convertAndDisplay(){
+    func convertAndDisplay(_ realmWrapper:RealmWrapper){
         mainPresenter.setInfoText(info:"")
         mainPresenter.setOutputAmount(outputValueInCents: 0.00)
         if(inputValueInCents.isEmpty){
@@ -74,11 +73,10 @@ class MainInteractor{
             return;
         }
         
-        //TODO ALVTAG REFACTOR FOR BETTER ENCAPSULATION
-        let fromIndex = mainPresenter.mainView.fromCurrencyPicker.selectedRow(inComponent: 0)
-        let toIndex = mainPresenter.mainView.toCurrencyPicker.selectedRow(inComponent: 0)
+        let fromIndex = mainPresenter.getFromPickerSelectedRow()
+        let toIndex = mainPresenter.getToPickerSelectedRow()
         
-        RealmWrapper.shared.getRateFromRealm(
+        realmWrapper.getRateFromRealm(
             baseCurrencySymbol: currenciesList[fromIndex],
             targetCurrencySymbol: currenciesList[toIndex],
             rateListener: self)
@@ -107,26 +105,37 @@ extension MainInteractor:GetRealmRateListener{
 extension MainInteractor:AlamoRatesListener{
     func onAlamoFetchComplete(_ exchangeRates: ExchangeRates) {
         for rate in exchangeRates.rates{
-            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:rate.key,
-                                           exchangeRate:rate.value, date:exchangeRates.date)
-            RealmWrapper.shared.insertRate(baseCurrencySymbol:rate.key, targetCurrencySymbol:exchangeRates.base,
-                                           exchangeRate:rate.value, date:exchangeRates.date)
-            RealmWrapper.shared.insertRate(baseCurrencySymbol:exchangeRates.base, targetCurrencySymbol:exchangeRates.base,
-                                           exchangeRate:1.0, date:exchangeRates.date)
+            let realmWrapper = RealmWrapper()
+            realmWrapper.insertRate(baseCurrencySymbol:exchangeRates.base,
+                                    targetCurrencySymbol:rate.key,
+                                    exchangeRate:rate.value,
+                                    date:exchangeRates.date)
+            realmWrapper.insertRate(baseCurrencySymbol:rate.key,
+                                    targetCurrencySymbol:exchangeRates.base,
+                                    exchangeRate:rate.value,
+                                    date:exchangeRates.date)
+            realmWrapper.insertRate(baseCurrencySymbol:exchangeRates.base,
+                                    targetCurrencySymbol:exchangeRates.base,
+                                    exchangeRate:1.0,
+                                    date:exchangeRates.date)
         }
         
         if(pendingUiPicker){
             pendingUiPicker = false;
-            loadCurrecyRateList();
+            loadCurrecyRateList(RealmWrapper());
         }
         
         if(pendingConversion){
             pendingConversion = false;
-            convertAndDisplay()
+            convertAndDisplay(RealmWrapper())
         }
     }
     
     func onAlamoError(_ error: Error) {
         print("MainInteractor:error \(error)")
+    }
+    
+    static func ==(lhs: MainInteractor, rhs: MainInteractor) -> Bool {
+        return lhs == rhs && lhs == rhs
     }
 }

@@ -23,7 +23,7 @@ public func equal<T: Equatable>(to array: [T]) -> ParameterMatcher<[T]> {
 }
 
 /// Returns an equality matcher for Set<Equatable>
-public func equal<T>(to set: Set<T>) -> ParameterMatcher<Set<T>> {
+public func equalSet<T>(to set: Set<T>) -> ParameterMatcher<Set<T>> {
     return equal(to: set, equalWhen: ==)
 }
 

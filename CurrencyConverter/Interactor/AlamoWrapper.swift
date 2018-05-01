@@ -42,20 +42,17 @@ class AlamoWrapper{
                         //TODO pass exchangeRates back to caller. let the caller deal with writing it into realm.
                         ratesListener.onAlamoFetchComplete(exchangeRates)
                     }
+                    else if let errorUnwrap = response.error {
+                        ratesListener.onAlamoError(errorUnwrap)
+                    }
                     else{
-                        if let errorUnwrap = response.error {
-                            ratesListener.onAlamoError(errorUnwrap)
-                        }
-                        else{
-                            print("unknown error in AlamoWrapper.getRates()")
-                        }
+                        print("unknown error in AlamoWrapper.getRates()")
                     }
                 }
         }
-        
     }
-    
 }
+
 protocol AlamoRatesListener{
     
     func onAlamoFetchComplete(_ exchangeRates:ExchangeRates);

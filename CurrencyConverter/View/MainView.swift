@@ -72,10 +72,17 @@ class MainView: UIViewController {
         infoTextLabel.text = text
     }
     
-}
-
-extension MainView: UIPickerViewDataSource, UIPickerViewDelegate{
+    func getFromPickerSelectedRow()->Int{
+        return fromCurrencyPicker.selectedRow(inComponent: 0)
+    }
+    
+    
+    func getToPickerSelectedRow()->Int{
+        return toCurrencyPicker.selectedRow(inComponent: 0)
+    }
+    
     func initUIPickers(){
+        print("point C- should have been mocked")
         fromCurrencyPicker.dataSource = self
         fromCurrencyPicker.delegate = self
         fromCurrencyPicker.reloadAllComponents()
@@ -83,7 +90,9 @@ extension MainView: UIPickerViewDataSource, UIPickerViewDelegate{
         toCurrencyPicker.delegate = self
         toCurrencyPicker.reloadAllComponents()
     }
+}
 
+extension MainView: UIPickerViewDataSource, UIPickerViewDelegate{
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }

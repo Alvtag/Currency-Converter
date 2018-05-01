@@ -12,11 +12,9 @@ import RealmSwift
 class RealmWrapper{
     let realm:Realm
     
-    static let shared = RealmWrapper()
-    private init() {
+    init() {
         realm = try! Realm()
-        print ("Realm file URL:")
-        print (Realm.Configuration.defaultConfiguration.fileURL!)
+        print ("Realm file URL:\(Realm.Configuration.defaultConfiguration.fileURL!)")
     }
     
     func getRateFromRealm(baseCurrencySymbol:String, targetCurrencySymbol:String, rateListener:GetRealmRateListener){
@@ -124,7 +122,7 @@ class RealmWrapper{
     }
 }
 
-protocol GetRealmRateListener {
+protocol GetRealmRateListener{
     func onRealmRateRetrieved(_ rate: Rate);
     func onRealmCurrencyNotAvailable(_ currencySymbol:String);
     func onRealmRateNotAvailable(baseCurrencySymbol:String, toCurrencySymbol:String);

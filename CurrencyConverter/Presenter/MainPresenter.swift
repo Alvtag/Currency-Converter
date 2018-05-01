@@ -32,16 +32,16 @@ class MainPresenter{
     }
     
     func clearCache(){
-        mainInteractor.clearCache()
+        mainInteractor.clearCache(RealmWrapper())
     }
     
     func convertAndDisplay(){
-        mainInteractor.convertAndDisplay()
+        mainInteractor.convertAndDisplay(RealmWrapper())
     }
     
     // MARK: - OUTGOING- FROM INTERACTOR TO UI
     
-    func setCurrenciesList(symbols:[String]){
+    func setCurrenciesList(){
         mainView.initUIPickers()
     }
     
@@ -81,5 +81,13 @@ class MainPresenter{
     
     func setInfoText(info:String){
         mainView.setInfoLabel(info)
+    }
+    
+    func getFromPickerSelectedRow()->Int{
+        return mainView.getFromPickerSelectedRow()
+    }
+    
+    func getToPickerSelectedRow()->Int{
+        return mainView.getToPickerSelectedRow()
     }
 }
